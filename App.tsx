@@ -1,26 +1,20 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
-import React, {useEffect, useState, type PropsWithChildren} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, {useEffect} from 'react';
 import {
-  ActivityIndicator,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
   View,
-  Image,
+  Button,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import CatViewer from './components/CatViewer';
+const Stack = createNativeStackNavigator();
 
 // const Section: React.FC<
 //   PropsWithChildren<{
@@ -53,48 +47,77 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 // };
 
 const App = () => {
+  // useEffect(() => {
+  //   fetch('https://api.thecatapi.com/v1/breeds', {})
+  //     .then(res => res.json())
+  //     .then((res: any[]) => {
+  //       for (const r of res) {
+  //         console.log(r.name);
+  //       }
+  //       console.log(res.length);
+  //     });
+  // }, []);
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="home"
+          component={Home}
+          options={{title: 'Bienvenido'}}
+        />
+        <Stack.Screen
+          name="catViewer"
+          component={CatViewer}
+          options={{title: 'Gaticos'}}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+const Home = ({navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1,
   };
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('https://api.thecatapi.com/v1/breeds', {})
-      .then(res => res.json())
-      .then((res: any[]) => {
-        setLoading(false);
-        for (const r of res) {
-          console.log(r.name);
-        }
-        console.log(res.length);
-      });
-  }, []);
-
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <Text style={styles.header}> CatWatcher </Text>
       <View style={styles.container}>
-        {loading ? <ActivityIndicator size="large" /> : <Card />}
+        <FastImage
+          source={require('./assets/gato3Blue.gif')}
+          style={styles.catImage}
+        />
       </View>
-      <Image
-        source={require('./assets/gatosInicial.gif')}
-        style={styles.catImage}
-      />
+      <View style={styles.buttonLogin}>
+        <Button
+          title="Ingresar"
+          color="#5ac9e8"
+          onPress={() => {
+            navigation.navigate('catViewer');
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 };
 
-const Card = () => {
-  return <Text> Hello world men! </Text>;
-};
-
 const styles = StyleSheet.create({
+  buttonLogin: {
+    padding: 20,
+  },
+  header: {
+    marginTop: 20,
+    padding: 20,
+    textAlign: 'center',
+    fontSize: 20,
+  },
   catImage: {
-    width: 100,
-    height: 100,
+    width: 300,
+    height: 300,
   },
   container: {
     flex: 1,
